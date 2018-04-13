@@ -11,7 +11,6 @@ from django.db import models
 
 
 class AuthGroup(models.Model):
-    id = models.IntegerField(primary_key=True)  # AutoField?
     name = models.CharField(unique=True, max_length=80)
 
     class Meta:
@@ -20,40 +19,37 @@ class AuthGroup(models.Model):
 
 
 class AuthGroupPermissions(models.Model):
-    id = models.IntegerField(primary_key=True)  # AutoField?
-    group = models.ForeignKey(AuthGroup, models.DO_NOTHING)
-    permission = models.ForeignKey('AuthPermission', models.DO_NOTHING)
+    group_id = models.IntegerField()
+    permission_id = models.IntegerField()
 
     class Meta:
         managed = False
         db_table = 'auth_group_permissions'
-        unique_together = (('group', 'permission'),)
+        unique_together = (('group_id', 'permission_id'),)
 
 
 class AuthPermission(models.Model):
-    id = models.IntegerField(primary_key=True)  # AutoField?
-    content_type = models.ForeignKey('DjangoContentType', models.DO_NOTHING)
-    codename = models.CharField(max_length=100)
     name = models.CharField(max_length=255)
+    content_type_id = models.IntegerField()
+    codename = models.CharField(max_length=100)
 
     class Meta:
         managed = False
         db_table = 'auth_permission'
-        unique_together = (('content_type', 'codename'),)
+        unique_together = (('content_type_id', 'codename'),)
 
 
 class AuthUser(models.Model):
-    id = models.IntegerField(primary_key=True)  # AutoField?
     password = models.CharField(max_length=128)
     last_login = models.DateTimeField(blank=True, null=True)
-    is_superuser = models.BooleanField()
+    is_superuser = models.IntegerField()
+    username = models.CharField(unique=True, max_length=150)
     first_name = models.CharField(max_length=30)
     last_name = models.CharField(max_length=30)
     email = models.CharField(max_length=254)
-    is_staff = models.BooleanField()
-    is_active = models.BooleanField()
+    is_staff = models.IntegerField()
+    is_active = models.IntegerField()
     date_joined = models.DateTimeField()
-    username = models.CharField(unique=True, max_length=150)
 
     class Meta:
         managed = False
@@ -61,36 +57,33 @@ class AuthUser(models.Model):
 
 
 class AuthUserGroups(models.Model):
-    id = models.IntegerField(primary_key=True)  # AutoField?
-    user = models.ForeignKey(AuthUser, models.DO_NOTHING)
-    group = models.ForeignKey(AuthGroup, models.DO_NOTHING)
+    user_id = models.IntegerField()
+    group_id = models.IntegerField()
 
     class Meta:
         managed = False
         db_table = 'auth_user_groups'
-        unique_together = (('user', 'group'),)
+        unique_together = (('user_id', 'group_id'),)
 
 
 class AuthUserUserPermissions(models.Model):
-    id = models.IntegerField(primary_key=True)  # AutoField?
-    user = models.ForeignKey(AuthUser, models.DO_NOTHING)
-    permission = models.ForeignKey(AuthPermission, models.DO_NOTHING)
+    user_id = models.IntegerField()
+    permission_id = models.IntegerField()
 
     class Meta:
         managed = False
         db_table = 'auth_user_user_permissions'
-        unique_together = (('user', 'permission'),)
+        unique_together = (('user_id', 'permission_id'),)
 
 
 class DjangoAdminLog(models.Model):
-    id = models.IntegerField(primary_key=True)  # AutoField?
+    action_time = models.DateTimeField()
     object_id = models.TextField(blank=True, null=True)
     object_repr = models.CharField(max_length=200)
-    action_flag = models.PositiveSmallIntegerField()
+    action_flag = models.SmallIntegerField()
     change_message = models.TextField()
-    content_type = models.ForeignKey('DjangoContentType', models.DO_NOTHING, blank=True, null=True)
-    user = models.ForeignKey(AuthUser, models.DO_NOTHING)
-    action_time = models.DateTimeField()
+    content_type_id = models.IntegerField(blank=True, null=True)
+    user_id = models.IntegerField()
 
     class Meta:
         managed = False
@@ -98,7 +91,6 @@ class DjangoAdminLog(models.Model):
 
 
 class DjangoContentType(models.Model):
-    id = models.IntegerField(primary_key=True)  # AutoField?
     app_label = models.CharField(max_length=100)
     model = models.CharField(max_length=100)
 
@@ -109,7 +101,6 @@ class DjangoContentType(models.Model):
 
 
 class DjangoMigrations(models.Model):
-    id = models.IntegerField(primary_key=True)  # AutoField?
     app = models.CharField(max_length=255)
     name = models.CharField(max_length=255)
     applied = models.DateTimeField()
@@ -129,31 +120,44 @@ class DjangoSession(models.Model):
         db_table = 'django_session'
 
 
-class SysStat(models.Model):
-    host = models.CharField(blank=True, null=True,max_length=50)
-    time = models.CharField(blank=True, null=True,max_length=50)
-    mem_free = models.CharField(blank=True, null=True,max_length=50)
-    mem_used = models.CharField(blank=True, null=True,max_length=50)
-    mem_total = models.CharField(blank=True, null=True,max_length=50)
-    up_day = models.CharField(blank=True, null=True,max_length=50)
-    up_hour = models.CharField(blank=True, null=True,max_length=50)
-    up_minute = models.CharField(blank=True, null=True,max_length=50)
-    up_free = models.CharField(blank=True, null=True,max_length=50)
-    cpu_count = models.CharField(blank=True, null=True,max_length=50)
-    cpu_rate = models.CharField(blank=True, null=True,max_length=50)
-    cpu_pcount = models.CharField(blank=True, null=True,max_length=50)
-    disk1_used = models.CharField(blank=True, null=True,max_length=50)
-    disk1_total = models.CharField(blank=True, null=True,max_length=50)
-    disk1_percent = models.CharField(blank=True, null=True,max_length=50)
-    disk1_name = models.CharField(blank=True, null=True,max_length=50)
-    disk1_free = models.CharField(blank=True, null=True,max_length=50)
-    net_port1 = models.CharField(blank=True, null=True,max_length=50)
-    net_port1_rec = models.CharField(blank=True, null=True,max_length=50)
-    net_port1_send = models.CharField(blank=True, null=True,max_length=50)
-    net_port2 = models.CharField(blank=True, null=True,max_length=50)
-    net_port2_rec = models.CharField(blank=True, null=True,max_length=50)
-    net_port2_send = models.CharField(blank=True, null=True,max_length=50)
-    lovg_1 = models.CharField(blank=True, null=True,max_length=50)
-    lavg_5 = models.CharField(blank=True, null=True,max_length=50)
-    lavg_15 = models.CharField(blank=True, null=True,max_length=50)
-    lavg_last_pid = models.CharField(blank=True, null=True,max_length=50)
+class MonitorHosts(models.Model):
+    id = models.AutoField(db_column='Id', primary_key=True)  # Field name made lowercase.
+    ip = models.CharField(max_length=50, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'monitor_hosts'
+
+
+class MonitorSysstat(models.Model):
+    host = models.CharField(max_length=50, blank=True, null=True)
+    time = models.CharField(max_length=50, blank=True, null=True)
+    mem_free = models.CharField(max_length=50, blank=True, null=True)
+    mem_used = models.CharField(max_length=50, blank=True, null=True)
+    mem_total = models.CharField(max_length=50, blank=True, null=True)
+    up_day = models.CharField(max_length=50, blank=True, null=True)
+    up_hour = models.CharField(max_length=50, blank=True, null=True)
+    up_minute = models.CharField(max_length=50, blank=True, null=True)
+    up_free = models.CharField(max_length=50, blank=True, null=True)
+    cpu_count = models.CharField(max_length=50, blank=True, null=True)
+    cpu_rate = models.CharField(max_length=50, blank=True, null=True)
+    cpu_pcount = models.CharField(max_length=50, blank=True, null=True)
+    disk1_used = models.CharField(max_length=50, blank=True, null=True)
+    disk1_total = models.CharField(max_length=50, blank=True, null=True)
+    disk1_percent = models.CharField(max_length=50, blank=True, null=True)
+    disk1_name = models.CharField(max_length=50, blank=True, null=True)
+    disk1_free = models.CharField(max_length=50, blank=True, null=True)
+    net_port1 = models.CharField(max_length=50, blank=True, null=True)
+    net_port1_rec = models.CharField(max_length=50, blank=True, null=True)
+    net_port1_send = models.CharField(max_length=50, blank=True, null=True)
+    net_port2 = models.CharField(max_length=50, blank=True, null=True)
+    net_port2_rec = models.CharField(max_length=50, blank=True, null=True)
+    net_port2_send = models.CharField(max_length=50, blank=True, null=True)
+    lovg_1 = models.CharField(max_length=50, blank=True, null=True)
+    lavg_5 = models.CharField(max_length=50, blank=True, null=True)
+    lavg_15 = models.CharField(max_length=50, blank=True, null=True)
+    lavg_last_pid = models.CharField(max_length=50, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'monitor_sysstat'

@@ -1,20 +1,19 @@
 # coding:utf8
 import MySQLdb
 from socket import *
-import logging
-import time
-logging.getLogger('socket').setLevel(logging.DEBUG)
-logging.basicConfig()
-db = MySQLdb.connect("127.0.0.1", "root", "123456", "ora", charset='utf8' )
-
-cursor = db.cursor()
+# import logging
+import sys
+# logging.getLogger('socket').setLevel(logging.DEBUG)
+# logging.basicConfig()
+sql_con=0
+while sql_con==0:
+    try:
+        db = MySQLdb.connect("127.0.0.1", "root", "123456", "ora", charset='utf8' )
+        cursor = db.cursor()
+        sql_con=1
+    except:
+        pass
 log_table = "monitor_sysstat"
-# host_table = "monitor_hosts"
-
-# def get_hosts():
-#     query_sql="select ip from "+host_table
-#     cursor.execute(query_sql)
-#     return cursor.fetchall()
 
 
 def save_to_db(data):
@@ -47,15 +46,15 @@ def save_to_db(data):
     sql_value.append('\''+data['load']['lavg_15']+'\'')
     sql_value.append('\''+data['load']['last_pid']+'\'')
     insert_data_sql = 'INSERT INTO ' + log_table + ' VALUES (\'1\',' + ",".join(sql_value)+')'
-    print insert_data_sql
+    # print insert_data_sql
     try:
         cursor.execute(insert_data_sql)
         db.commit()
-        result = "sucessful"
     except MySQLdb.Error,e:
-        print 'Error %d: %s' % (e.args[0], e.args[1])
-        result ="a"
-    return result
+        pass
+        # print 'Error %d: %s' % (e.args[0], e.args[1])
+
+
 def client(host):
     HOST = host
     PORT = 10521
@@ -69,20 +68,16 @@ def client(host):
             clientsocket.close
     while True:
         try:
-            print "ok"
             clientsocket.send("ok")
-            data = clientsocket.recv(1024)
-            save_data = eval(data)
-            time.sleep(3)
-            result = save_to_db(save_data)
-            print result
+            data = clientsocket.recv(10240)
         except:
             client(host)
+        save_data = eval(data)
+        save_to_db(save_data)
     clientsocket.close
 
 
 if __name__ == "__main__":
-    # if sys.argv[1]:
-        # print sys.argv[1]
-        # client(sys.argv[1])
-        client('192.168.42.178')
+    if sys.argv[1]:
+        print sys.argv[1]
+        client(sys.argv[1])

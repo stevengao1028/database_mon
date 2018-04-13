@@ -1,7 +1,6 @@
 # !/usr/bin/env python
 # -*- coding: UTF-8 -*-
 import psutil
-import os
 from socket import *
 import time
 from datetime import datetime
@@ -116,10 +115,14 @@ def server():
     while True:
         send_info = sys_info()
         data = repr(send_info.all_info())
-        tcpclientsocket.send(data)
+        try:
+            tcpclientsocket.recv(1024)
+            tcpclientsocket.send(data)
+        except:
+            tcpclientsocket, addr = server_socket.accept()
         print data
-        time.sleep(3)
-    # tcpclientsocket.close()
+        time.sleep(5)
+    tcpclientsocket.close()
     server_socket.close()
 
 if __name__ == "__main__":
