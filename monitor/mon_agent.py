@@ -1,18 +1,21 @@
 # !/usr/bin/env python
 # -*- coding: UTF-8 -*-
-# import psutil
+import psutil
 import os
 from socket import *
 import time
 from datetime import datetime
+
+last_worktime=0
+last_idletime=0
 
 class sys_info:
     def __init__(self):
         self.data = {}
 
     def host_name(self):
-        host=os.popen('echo $HOSTNAME').read()
-        return host.rstrip('\n')
+        host=os.popen('echo $HOSTNAME').read().rstrip('\n')
+        return host
 
     def host_time(self):
         now_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
@@ -24,10 +27,25 @@ class sys_info:
         # cpu['rate']=str(psutil.cpu_percent())
         # cpu['lcount']=str(psutil.cpu_count())
         # cpu['pcount']=str(psutil.cpu_count(logical=False))
-        cpu['rate'] = "10"
-        cpu['lcount']= "4"
-        cpu['pcount']= "6"
         # cpu['times']=str(psutil.cpu_times())
+        cpu['pcount']= os.popen('cat /proc/cpuinfo |grep "physical id"|sort |uniq|wc -l').read().rstrip('\n')
+        cpu['lcount']= os.popen('cat /proc/cpuinfo |grep "processor"|wc -l').read().rstrip('\n')
+        cpu['rate'] = "10"
+        global last_worktime, last_idletime
+        f = open("/proc/stat", "r")
+        line = ""
+        while not "cpu " in line: line = f.readline()
+        f.close()
+        spl = line.split(" ")
+        worktime = int(spl[2]) + int(spl[3]) + int(spl[4])
+        idletime = int(spl[5])
+        dworktime = (worktime - last_worktime)
+        didletime = (idletime - last_idletime)
+        rate = float(dworktime) / (didletime + dworktime)
+        last_worktime = worktime
+        last_idletime = idletime
+        if (last_worktime == 0): cpu['rate'] = "0"
+        cpu['rate'] = str(round(rate))
         return cpu
 
     def memory_info(self):
@@ -83,23 +101,19 @@ class sys_info:
             intf['interface'] = con[0].lstrip(":")
             intf['ReceiveBytes'] = con[1]
             intf['TransmitBytes'] = con[9]
-
             net.append(intf)
         return net
 
     def disk_info(self,diskname):
         hd={}
-        # disk_info=psutil.disk_usage(diskname)
+        disk = os.statvfs(diskname)
         hd['name'] = diskname
-        # hd['total'] = str(disk_info.total/(1024*1024*1024))
-        # hd['used'] = str(disk_info.used/(1024*1024*1024))
-        # hd['free'] = str(disk_info.free / (1024 * 1024 * 1024))
-        # hd['percent'] =str(disk_info.percent / (1024 * 1024 * 1024))
-        hd['total'] = str(10)
-        hd['used'] = str(3)
-        hd['free'] = str(7)
-        hd['percent'] =str(3)
+        hd['total'] = str(disk.f_frsize * disk.f_blocks/(1024*1024*1024))
+        hd['free'] = str(disk.f_frsize * disk.f_bfree/(1024*1024*1024))
+        hd['used'] = str((disk.f_frsize * disk.f_blocks-disk.f_frsize * disk.f_bfree)/(1024*1024*1024))
+        hd['percent'] = str(round((disk.f_frsize * disk.f_blocks-disk.f_frsize * disk.f_bfree)* 100.0 /disk.f_frsize * disk.f_blocks))
         return hd
+
     def all_info(self):
         self.data['name'] = self.host_name()
         self.data['time'] = self.host_time()
