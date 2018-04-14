@@ -15,7 +15,7 @@ def revdata(request):
         if request.method == "POST":
             data = json.loads(request.body)
             try:
-                SysStat.objects.create(host=data['name'],time=data['time'],mem_free=data['mem']['MemFree'],\
+                MonitorSysstat.objects.create(host=data['name'],time=data['time'],mem_free=data['mem']['MemFree'],\
                        mem_used=data['mem']['MemUsed'],mem_total=data['mem']['MemTotal'],up_day=data['uptime']['day'],\
                        up_hour=data['uptime']['hour'],up_minute=data['uptime']['minute'],up_free=data['uptime']['Free rate'],\
                        cpu_count=data['cpu']['lcount'],cpu_rate=data['cpu']['rate'],cpu_pcount=data['cpu']['pcount'],\

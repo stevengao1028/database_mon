@@ -1,6 +1,7 @@
 # !/usr/bin/env python
 # -*- coding: UTF-8 -*-
-import psutil
+# import psutil
+import os
 from socket import *
 import time
 from datetime import datetime
@@ -20,9 +21,12 @@ class sys_info:
 
     def cpu_info(self):
         cpu={}
-        cpu['rate']=str(psutil.cpu_percent())
-        cpu['lcount']=str(psutil.cpu_count())
-        cpu['pcount']=str(psutil.cpu_count(logical=False))
+        # cpu['rate']=str(psutil.cpu_percent())
+        # cpu['lcount']=str(psutil.cpu_count())
+        # cpu['pcount']=str(psutil.cpu_count(logical=False))
+        cpu['rate'] = "10"
+        cpu['lcount']= "4"
+        cpu['pcount']= "6"
         # cpu['times']=str(psutil.cpu_times())
         return cpu
 
@@ -85,12 +89,16 @@ class sys_info:
 
     def disk_info(self,diskname):
         hd={}
-        disk_info=psutil.disk_usage(diskname)
+        # disk_info=psutil.disk_usage(diskname)
         hd['name'] = diskname
-        hd['total'] = str(disk_info.total/(1024*1024*1024))
-        hd['used'] = str(disk_info.used/(1024*1024*1024))
-        hd['free'] = str(disk_info.free / (1024 * 1024 * 1024))
-        hd['percent'] =str(disk_info.percent / (1024 * 1024 * 1024))
+        # hd['total'] = str(disk_info.total/(1024*1024*1024))
+        # hd['used'] = str(disk_info.used/(1024*1024*1024))
+        # hd['free'] = str(disk_info.free / (1024 * 1024 * 1024))
+        # hd['percent'] =str(disk_info.percent / (1024 * 1024 * 1024))
+        hd['total'] = str(10)
+        hd['used'] = str(3)
+        hd['free'] = str(7)
+        hd['percent'] =str(3)
         return hd
     def all_info(self):
         self.data['name'] = self.host_name()
