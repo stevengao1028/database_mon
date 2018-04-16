@@ -58,7 +58,7 @@ def save_to_db(data):
     insert_port_sql = 'INSERT INTO ' + net_table + ' VALUES (\'1\',' + ",".join(port_value) + ')'
     print insert_base_sql
     print insert_disk_sql
-    print insert_port_sql
+    print insert_port_sql 
     #base_insert
     try:
         cursor.execute(insert_base_sql)
