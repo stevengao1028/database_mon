@@ -3,6 +3,7 @@ import MySQLdb
 from socket import *
 # import logging
 import sys
+import json
 # logging.getLogger('socket').setLevel(logging.DEBUG)
 # logging.basicConfig()
 sql_con=0
@@ -72,8 +73,10 @@ def client(host):
             data = clientsocket.recv(10240)
         except:
             client(host)
-        save_data = eval(data)
-        save_to_db(save_data)
+        print data
+        print type(json.loads(data))
+        # save_data = eval(data)
+        # save_to_db(save_data)
     clientsocket.close
 
 
