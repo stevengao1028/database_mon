@@ -13,11 +13,12 @@ def exe_command(exe_cmd):
 
 
 def base_info():
-    sys_info={'hostname':"",'loadaverage':"",'uptime':"",'totaltask':"",'running':"",'sleeping':"",'stopped':"",'zombie':"", \
+    sys_info={'loadaverage':"",'uptime':"",'totaltask':"",'running':"",'sleeping':"",'stopped':"",'zombie':"", \
               'cpuus':"",'cpusy':"",'cpyni':"",'cpuid':"",'cpuwa':"",'cpuhi':"",'cpusi':"",'cpust':"",'memtotal':"",\
               'memfree':"",'memused':"",'memcache':"",'swaptotal':"",'swapfree':"",'swapused':"",'swapcache':"",\
-              'hostname':"",'cpu_pcount':"",'cpu_lcount':"",'version':""}
+              'hostname':"",'cpu_pcount':"",'cpu_lcount':"",'version':"",'disks':"",'ports':""}
     disks=[]
+    netports=[]
     top_cmd = "top  -n 1 -bi"
     top_result = exe_command(top_cmd)
     if top_result['status'] == "0":
@@ -67,13 +68,18 @@ def base_info():
     version_result = exe_command(version_cmd)
     if version_result['status'] == "0":
         sys_info['version'] = version_result['info']
-    disk_cmd = """df -h |awk '$1!~/Filesystem/{print $1,$5}'"""
+    disk_cmd = """df -h |awk '$1!~/Filesystem/{print $1,$2,$5}'"""
     disk_result = exe_command(disk_cmd)
     if disk_result['status'] == "0":
         for line in disk_result['info'].split('\n'):
             disks.append(line)
         sys_info['disks'] = disks
-
+    port_cmd = """cat /proc/net/dev |awk '{print $1,$2,$10}' |sed '/Inter/d;/face/d'"""
+    port_result = exe_command(port_cmd)
+    if port_result['status'] == "0":
+        for line in port_result['info'].split('\n'):
+            netports.append(line)
+        sys_info['ports'] = netports
     result = sys_info
     return result
 

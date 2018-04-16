@@ -14,47 +14,67 @@ while sql_con==0:
         sql_con=1
     except:
         pass
-log_table = "monitor_sysstat"
+base_table = "sysstat"
+disk_table = "diskstat"
+net_table = "netstat"
+ora_table = "ora"
 
 
 def save_to_db(data):
-    sql_value=[]
-    sql_value.append('\''+data['name']+'\'')
-    sql_value.append('\''+data['time']+'\'')
-    sql_value.append('\''+data['mem']['MemFree']+'\'')
-    sql_value.append('\''+data['mem']['MemUsed']+'\'')
-    sql_value.append('\''+data['mem']['MemTotal']+'\'')
-    sql_value.append('\''+data['uptime']['day']+'\'')
-    sql_value.append('\''+data['uptime']['hour']+'\'')
-    sql_value.append('\''+data['uptime']['minute']+'\'')
-    sql_value.append('\''+data['uptime']['Free rate']+'\'')
-    sql_value.append('\''+data['cpu']['lcount']+'\'')
-    sql_value.append('\''+data['cpu']['rate']+'\'')
-    sql_value.append('\''+data['cpu']['pcount']+'\'')
-    sql_value.append('\''+data['disk']['used']+'\'')
-    sql_value.append('\''+data['disk']['total']+'\'')
-    sql_value.append('\''+data['disk']['percent']+'\'')
-    sql_value.append('\''+data['disk']['name']+'\'')
-    sql_value.append('\''+data['disk']['free']+'\'')
-    sql_value.append('\''+data['net'][0]['interface']+'\'')
-    sql_value.append('\''+data['net'][0]['ReceiveBytes']+'\'')
-    sql_value.append('\''+data['net'][0]['TransmitBytes']+'\'')
-    sql_value.append('\''+data['net'][1]['interface']+'\'')
-    sql_value.append('\''+data['net'][1]['ReceiveBytes']+'\'')
-    sql_value.append('\''+data['net'][1]['TransmitBytes']+'\'')
-    sql_value.append('\''+data['load']['lavg_1']+'\'')
-    sql_value.append('\''+data['load']['lavg_5']+'\'')
-    sql_value.append('\''+data['load']['lavg_15']+'\'')
-    sql_value.append('\''+data['load']['last_pid']+'\'')
-    insert_data_sql = 'INSERT INTO ' + log_table + ' VALUES (\'1\',' + ",".join(sql_value)+')'
-    # print insert_data_sql
+    base_value=[]
+    # disk_value=[]
+    # port_value=[]
+    base_value.append('\''+data['loadaverage']+'\'')
+    base_value.append('\''+data['uptime']+'\'')
+    base_value.append('\''+data['totaltask']+'\'')
+    base_value.append('\''+data['running']+'\'')
+    base_value.append('\''+data['sleeping']+'\'')
+    base_value.append('\''+data['stopped']+'\'')
+    base_value.append('\''+data['zombie']+'\'')
+    base_value.append('\''+data['cpuus']+'\'')
+    base_value.append('\''+data['cpusy']+'\'')
+    base_value.append('\''+data['cpyni']+'\'')
+    base_value.append('\''+data['cpuid']+'\'')
+    base_value.append('\''+data['cpuwa']+'\'')
+    base_value.append('\''+data['cpuhi']+'\'')
+    base_value.append('\''+data['cpusi']+'\'')
+    base_value.append('\''+data['cpust']+'\'')
+    base_value.append('\''+data['memtotal']+'\'')
+    base_value.append('\''+data['memfree']+'\'')
+    base_value.append('\''+data['memused']+'\'')
+    base_value.append('\''+data['memcache']+'\'')
+    base_value.append('\''+data['swaptotal']+'\'')
+    base_value.append('\''+data['swapfree']+'\'')
+    base_value.append('\''+data['swapused']+'\'')
+    base_value.append('\''+data['swapcache']+'\'')
+    base_value.append('\''+data['hostname']+'\'')
+    base_value.append('\''+data['cpu_pcount']+'\'')
+    base_value.append('\''+data['cpu_lcount']+'\'')
+    base_value.append('\'' + data['version'] + '\'')
+    disk_value = data['disks']
+    port_value = data['ports']
+    insert_base_sql = 'INSERT INTO ' + base_table + ' VALUES (\'1\',' + ",".join(base_value)+')'
+    insert_disk_sql = 'INSERT INTO ' + disk_table + ' VALUES (\'1\',' + ",".join(disk_value) + ')'
+    insert_port_sql = 'INSERT INTO ' + disk_table + ' VALUES (\'1\',' + ",".join(port_value) + ')'
+    #base_insert
     try:
-        cursor.execute(insert_data_sql)
+        cursor.execute(insert_base_sql)
         db.commit()
     except MySQLdb.Error,e:
         pass
         # print 'Error %d: %s' % (e.args[0], e.args[1])
-
+    # disk_insert
+    try:
+        cursor.execute(insert_disk_sql)
+        db.commit()
+    except MySQLdb.Error,e:
+        pass
+    # port_insert
+    try:
+        cursor.execute(insert_port_sql)
+        db.commit()
+    except MySQLdb.Error,e:
+        pass
 
 def client(host):
     HOST = host
@@ -73,10 +93,8 @@ def client(host):
             data = clientsocket.recv(10240)
         except:
             client(host)
-        print data
-        print type(json.loads(data))
-        # save_data = eval(data)
-        # save_to_db(save_data)
+        save_data = eval(data)
+        save_to_db(save_data)
     clientsocket.close
 
 
