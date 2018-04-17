@@ -51,14 +51,20 @@ def save_to_db(data):
     base_value.append('\''+data['cpu_pcount']+'\'')
     base_value.append('\''+data['cpu_lcount']+'\'')
     base_value.append('\'' + data['version'] + '\'')
+    base_value.append('\'' + data['now_time'] + '\'')
     disk_value = data['disks']
     port_value = data['ports']
+    print len(disk_table)
+    for i in range(len(disk_value), 31):
+        disk_value.append('\'\'')
+    for i in range(len(port_value), 11):
+        port_value.append('\'\'')
     insert_base_sql = 'INSERT INTO ' + base_table + ' VALUES (\'1\',' + ",".join(base_value)+')'
     insert_disk_sql = 'INSERT INTO ' + disk_table + ' VALUES (\'1\',' + ",".join(disk_value) + ')'
     insert_port_sql = 'INSERT INTO ' + net_table + ' VALUES (\'1\',' + ",".join(port_value) + ')'
-    print insert_base_sql
+    # print insert_base_sql
     print insert_disk_sql
-    print insert_port_sql 
+    print insert_port_sql
     #base_insert
     try:
         cursor.execute(insert_base_sql)
@@ -105,3 +111,4 @@ if __name__ == "__main__":
     if sys.argv[1]:
         print sys.argv[1]
         client(sys.argv[1])
+    db.close()

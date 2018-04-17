@@ -4,6 +4,7 @@ import commands
 from socket import *
 import time
 import json
+from datetime import datetime
 
 
 def exe_command(exe_cmd):
@@ -52,6 +53,7 @@ def base_info():
                 if len(line.split(",")[2].split('.')) ==2:
                     sys_info['swapused'] = line.split(",")[2].split('.')[0].rstrip("used").strip()
                     sys_info['swapcache'] = line.split(",")[2].split('.')[1].rstrip("avail Mem").strip()
+    sys_info['now_time'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     host_cmd = "echo $HOSTNAME"
     host_result = exe_command(host_cmd)
     if host_result['status'] == "0":
@@ -71,14 +73,16 @@ def base_info():
     disk_cmd = """df -h |awk '$1!~/Filesystem/{print $1,$2,$5}'"""
     disk_result = exe_command(disk_cmd)
     if disk_result['status'] == "0":
+        disks.append('\''+sys_info['now_time']+'\'')
         for line in disk_result['info'].split('\n'):
-            disks.append(line)
+            disks.append('\''+line+'\'')
         sys_info['disks'] = disks
     port_cmd = """cat /proc/net/dev |awk '{print $1,$2,$10}' |sed '/Inter/d;/face/d'"""
     port_result = exe_command(port_cmd)
     if port_result['status'] == "0":
+        netports.append('\'' + sys_info['now_time'] + '\'')
         for line in port_result['info'].split('\n'):
-            netports.append(line)
+            netports.append('\''+line+'\'')
         sys_info['ports'] = netports
     result = sys_info
     return result

@@ -76,6 +76,45 @@ class AuthUserUserPermissions(models.Model):
         unique_together = (('user_id', 'permission_id'),)
 
 
+class Diskstat(models.Model):
+    id = models.IntegerField(db_column='Id')  # Field name made lowercase.
+    time = models.CharField(primary_key=True, max_length=255)
+    disk1 = models.CharField(max_length=255, blank=True, null=True)
+    disk2 = models.CharField(max_length=255, blank=True, null=True)
+    disk3 = models.CharField(max_length=255, blank=True, null=True)
+    disk4 = models.CharField(max_length=255, blank=True, null=True)
+    disk5 = models.CharField(max_length=255, blank=True, null=True)
+    disk6 = models.CharField(max_length=255, blank=True, null=True)
+    disk7 = models.CharField(max_length=255, blank=True, null=True)
+    disk8 = models.CharField(max_length=255, blank=True, null=True)
+    disk9 = models.CharField(max_length=255, blank=True, null=True)
+    disk10 = models.CharField(max_length=255, blank=True, null=True)
+    disk11 = models.CharField(max_length=255, blank=True, null=True)
+    disk12 = models.CharField(max_length=255, blank=True, null=True)
+    disk13 = models.CharField(max_length=255, blank=True, null=True)
+    disk14 = models.CharField(max_length=255, blank=True, null=True)
+    disk15 = models.CharField(max_length=255, blank=True, null=True)
+    disk16 = models.CharField(max_length=255, blank=True, null=True)
+    disk17 = models.CharField(max_length=255, blank=True, null=True)
+    disk18 = models.CharField(max_length=255, blank=True, null=True)
+    disk19 = models.CharField(max_length=255, blank=True, null=True)
+    disk20 = models.CharField(max_length=255, blank=True, null=True)
+    disk21 = models.CharField(max_length=255, blank=True, null=True)
+    disk22 = models.CharField(max_length=255, blank=True, null=True)
+    disk23 = models.CharField(max_length=255, blank=True, null=True)
+    disk24 = models.CharField(max_length=255, blank=True, null=True)
+    disk25 = models.CharField(max_length=255, blank=True, null=True)
+    disk26 = models.CharField(max_length=255, blank=True, null=True)
+    disk27 = models.CharField(max_length=255, blank=True, null=True)
+    disk28 = models.CharField(max_length=255, blank=True, null=True)
+    disk29 = models.CharField(max_length=255, blank=True, null=True)
+    disk30 = models.CharField(max_length=255, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'diskstat'
+
+
 class DjangoAdminLog(models.Model):
     action_time = models.DateTimeField()
     object_id = models.TextField(blank=True, null=True)
@@ -120,97 +159,65 @@ class DjangoSession(models.Model):
         db_table = 'django_session'
 
 
-class MonitorHosts(models.Model):
-    id = models.AutoField(db_column='Id', primary_key=True)  # Field name made lowercase.
-    ip = models.CharField(max_length=50, blank=True, null=True)
+class Hostlist(models.Model):
+    id = models.IntegerField(db_column='Id')  # Field name made lowercase.
+    ip = models.CharField(primary_key=True, max_length=255)
 
     class Meta:
         managed = False
-        db_table = 'monitor_hosts'
+        db_table = 'hostlist'
 
 
-class sysstat(models.Model):
-    loadaverage = models.CharField(max_length=50, blank=True, null=True)
-    uptime = models.CharField(max_length=50, blank=True, null=True)
-    totaltask = models.CharField(max_length=50, blank=True, null=True)
-    running = models.CharField(max_length=50, blank=True, null=True)
-    sleeping = models.CharField(max_length=50, blank=True, null=True)
-    stopped = models.CharField(max_length=50, blank=True, null=True)
-    zombie = models.CharField(max_length=50, blank=True, null=True)
-    cpuus = models.CharField(max_length=50, blank=True, null=True)
-    cpusy = models.CharField(max_length=50, blank=True, null=True)
-    cpyni = models.CharField(max_length=50, blank=True, null=True)
-    cpuid = models.CharField(max_length=50, blank=True, null=True)
-    cpuwa = models.CharField(max_length=50, blank=True, null=True)
-    cpuhi = models.CharField(max_length=50, blank=True, null=True)
-    cpusi = models.CharField(max_length=50, blank=True, null=True)
-    cpust = models.CharField(max_length=50, blank=True, null=True)
-    memtotal = models.CharField(max_length=50, blank=True, null=True)
-    memfree = models.CharField(max_length=50, blank=True, null=True)
-    memused = models.CharField(max_length=50, blank=True, null=True)
-    memcache = models.CharField(max_length=50, blank=True, null=True)
-    swaptotal = models.CharField(max_length=50, blank=True, null=True)
-    swapfree = models.CharField(max_length=50, blank=True, null=True)
-    swapused = models.CharField(max_length=50, blank=True, null=True)
-    swapcache = models.CharField(max_length=50, blank=True, null=True)
-    hostname = models.CharField(max_length=50, blank=True, null=True)
-    cpu_pcount = models.CharField(max_length=50, blank=True, null=True)
-    cpu_lcount = models.CharField(max_length=50, blank=True, null=True)
-    version = models.CharField(max_length=50, blank=True, null=True)
-
-    class Meta:
-        managed = False
-        db_table = 'sysstat'
-
-
-class diskstat(models.Model):
-    disk1 = models.CharField(max_length=50, blank=True, null=True)
-    disk2 = models.CharField(max_length=50, blank=True, null=True)
-    disk3 = models.CharField(max_length=50, blank=True, null=True)
-    disk4 = models.CharField(max_length=50, blank=True, null=True)
-    disk5 = models.CharField(max_length=50, blank=True, null=True)
-    disk6 = models.CharField(max_length=50, blank=True, null=True)
-    disk7 = models.CharField(max_length=50, blank=True, null=True)
-    disk8 = models.CharField(max_length=50, blank=True, null=True)
-    disk9 = models.CharField(max_length=50, blank=True, null=True)
-    disk10 = models.CharField(max_length=50, blank=True, null=True)
-    disk11 = models.CharField(max_length=50, blank=True, null=True)
-    disk12 = models.CharField(max_length=50, blank=True, null=True)
-    disk13 = models.CharField(max_length=50, blank=True, null=True)
-    disk14 = models.CharField(max_length=50, blank=True, null=True)
-    disk15 = models.CharField(max_length=50, blank=True, null=True)
-    disk16 = models.CharField(max_length=50, blank=True, null=True)
-    disk17 = models.CharField(max_length=50, blank=True, null=True)
-    disk18 = models.CharField(max_length=50, blank=True, null=True)
-    disk19 = models.CharField(max_length=50, blank=True, null=True)
-    disk20 = models.CharField(max_length=50, blank=True, null=True)
-    disk21 = models.CharField(max_length=50, blank=True, null=True)
-    disk22 = models.CharField(max_length=50, blank=True, null=True)
-    disk23 = models.CharField(max_length=50, blank=True, null=True)
-    disk24 = models.CharField(max_length=50, blank=True, null=True)
-    disk25 = models.CharField(max_length=50, blank=True, null=True)
-    disk26 = models.CharField(max_length=50, blank=True, null=True)
-    disk27 = models.CharField(max_length=50, blank=True, null=True)
-    disk28 = models.CharField(max_length=50, blank=True, null=True)
-    disk29 = models.CharField(max_length=50, blank=True, null=True)
-    disk30 = models.CharField(max_length=50, blank=True, null=True)
-
-    class Meta:
-        managed = False
-        db_table = 'diskstat'
-
-class netstat(models.Model):
-    net1 = models.CharField(max_length=50, blank=True, null=True)
-    net2 = models.CharField(max_length=50, blank=True, null=True)
-    net3 = models.CharField(max_length=50, blank=True, null=True)
-    net4 = models.CharField(max_length=50, blank=True, null=True)
-    net5 = models.CharField(max_length=50, blank=True, null=True)
-    net6 = models.CharField(max_length=50, blank=True, null=True)
-    net7 = models.CharField(max_length=50, blank=True, null=True)
-    net8 = models.CharField(max_length=50, blank=True, null=True)
-    net9 = models.CharField(max_length=50, blank=True, null=True)
-    net10 = models.CharField(max_length=50, blank=True, null=True)
+class Netstat(models.Model):
+    id = models.IntegerField(db_column='Id')  # Field name made lowercase.
+    time = models.CharField(primary_key=True, max_length=255)
+    net1 = models.CharField(max_length=255, blank=True, null=True)
+    net2 = models.CharField(max_length=255, blank=True, null=True)
+    net3 = models.CharField(max_length=255, blank=True, null=True)
+    net4 = models.CharField(max_length=255, blank=True, null=True)
+    net5 = models.CharField(max_length=255, blank=True, null=True)
+    net6 = models.CharField(max_length=255, blank=True, null=True)
+    net7 = models.CharField(max_length=255, blank=True, null=True)
+    net8 = models.CharField(max_length=255, blank=True, null=True)
+    net9 = models.CharField(max_length=255, blank=True, null=True)
+    net10 = models.CharField(max_length=255, blank=True, null=True)
 
     class Meta:
         managed = False
         db_table = 'netstat'
+
+
+class Sysstat(models.Model):
+    id = models.IntegerField(db_column='Id')  # Field name made lowercase.
+    loadaverage = models.CharField(max_length=255, blank=True, null=True)
+    uptime = models.CharField(max_length=255, blank=True, null=True)
+    totaltask = models.CharField(max_length=255, blank=True, null=True)
+    running = models.CharField(max_length=255, blank=True, null=True)
+    sleeping = models.CharField(max_length=255, blank=True, null=True)
+    stopped = models.CharField(max_length=255, blank=True, null=True)
+    zombie = models.CharField(max_length=255, blank=True, null=True)
+    cpuus = models.CharField(max_length=255, blank=True, null=True)
+    cpusy = models.CharField(max_length=255, blank=True, null=True)
+    cpyni = models.CharField(max_length=255, blank=True, null=True)
+    cpuid = models.CharField(max_length=255, blank=True, null=True)
+    cpuwa = models.CharField(max_length=255, blank=True, null=True)
+    cpuhi = models.CharField(max_length=255, blank=True, null=True)
+    cpusi = models.CharField(max_length=255, blank=True, null=True)
+    cpust = models.CharField(max_length=255, blank=True, null=True)
+    memtotal = models.CharField(max_length=255, blank=True, null=True)
+    memfree = models.CharField(max_length=255, blank=True, null=True)
+    memused = models.CharField(max_length=255, blank=True, null=True)
+    memcache = models.CharField(max_length=255, blank=True, null=True)
+    swaptotal = models.CharField(max_length=255, blank=True, null=True)
+    swapfree = models.CharField(max_length=255, blank=True, null=True)
+    swapused = models.CharField(max_length=255, blank=True, null=True)
+    swapcache = models.CharField(max_length=255, blank=True, null=True)
+    hostname = models.CharField(max_length=255, blank=True, null=True)
+    cpu_pcount = models.CharField(max_length=255, blank=True, null=True)
+    cpu_lcount = models.CharField(max_length=255, blank=True, null=True)
+    version = models.CharField(max_length=255, blank=True, null=True)
+    now_time = models.CharField(primary_key=True, max_length=255)
+
+    class Meta:
+        managed = False
+        db_table = 'sysstat'
